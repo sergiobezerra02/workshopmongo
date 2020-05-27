@@ -5,8 +5,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.workshopmongo.domain.User;
 import com.example.workshopmongo.dto.UserDTO;
+import com.example.workshopmongo.response.Response;
 import com.example.workshopmongo.services.UserService;
 
 @RestController
@@ -42,7 +46,15 @@ public class UserResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Void> insert(@RequestBody UserDTO userDto){
+	public ResponseEntity<Response<UserDTO>> insert(@Valid @RequestBody UserDTO userDto,
+			                                               BindingResult result){
+		
+		Response<UserDTO> response = new Response<UserDTO>();
+		if(result.hasErrors()) {
+			result.getAllErrors().forEach(errors -> response.getErrors().add(errors.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		
 		User user = userService.fromDTO(userDto);
 		user = userService.insert(user);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();

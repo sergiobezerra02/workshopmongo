@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import com.example.workshopmongo.domain.User;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+
 public class UserDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -31,6 +34,8 @@ public class UserDTO implements Serializable{
 		this.id = id;
 	}
 
+	@Pattern(regexp = "\\p{L}+", message = "Atenção! Nome não deve possuir números.")
+	@NotEmpty(message = "Atenção!: Nome não pode ser nulo.")
 	public String getName() {
 		return name;
 	}
