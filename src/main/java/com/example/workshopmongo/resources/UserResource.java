@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,6 +67,23 @@ public class UserResource {
 	public ResponseEntity<Void> delete(@PathVariable String id){
 		userService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping(value="/{id}")
+	public ResponseEntity<Response<UserDTO>> update(@Valid @RequestBody UserDTO userDto, @PathVariable String id,
+			                                               BindingResult result){
+		
+		Response<UserDTO> response = new Response<UserDTO>();
+		if(result.hasErrors()) {
+			result.getAllErrors().forEach(errors -> response.getErrors().add(errors.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		User user = userService.fromDTO(userDto);
+		user.setId(id);
+		user = userService.update(user);
+		return ResponseEntity.noContent().build();
+		
 	}
 
 }
