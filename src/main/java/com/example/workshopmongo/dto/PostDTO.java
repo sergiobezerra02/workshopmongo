@@ -29,6 +29,17 @@ public class PostDTO implements Serializable{
 		this.author = author;
 	}
 	
+	public PostDTO(Post post) {
+		super();
+		if(post != null) {
+			this.id = post.getId();
+			this.date = post.getDate();
+			this.title = post.getTitle();
+			this.body = post.getBody();
+			this.author = post.getAuthor();
+		}
+	}
+	
 	public List<PostDTO> getListaPostDTO(List<Post> listaPost) {
 		List<PostDTO> listaPostDTO = null;
 		if(listaPost != null) {
