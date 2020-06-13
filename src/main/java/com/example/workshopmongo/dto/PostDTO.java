@@ -2,6 +2,7 @@ package com.example.workshopmongo.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class PostDTO implements Serializable{
 	private String title;
 	private String body;
 	private AuthorDTO author;
+	
+	private List<CommentsDTO> comments = new ArrayList<>();
 	
 	public PostDTO() {
 		super();
@@ -45,7 +48,9 @@ public class PostDTO implements Serializable{
 		if(listaPost != null) {
 			listaPostDTO = new ArrayList<>();
 			for (Post post : listaPost) {
-				listaPostDTO.add(new PostDTO(post.getId(), post.getDate(), post.getTitle(), post.getBody(), post.getAuthor()));
+				PostDTO postDTO = new PostDTO(post.getId(), post.getDate(), post.getTitle(), post.getBody(), post.getAuthor()); 
+				postDTO.setComments(post.getComments());
+				listaPostDTO.add(postDTO);						                    
 			}
 			
 		}
@@ -90,6 +95,14 @@ public class PostDTO implements Serializable{
 
 	public void setAuthor(AuthorDTO author) {
 		this.author = author;
+	}
+
+	public List<CommentsDTO> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<CommentsDTO> comments) {
+		this.comments = comments;
 	}
 	
 	
