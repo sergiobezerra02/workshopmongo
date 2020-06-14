@@ -1,5 +1,6 @@
 package com.example.workshopmongo.resources;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,20 @@ public class PostResource {
 		return ResponseEntity.ok().body(new PostDTO().getListaPostDTO(postService.findByTitle(URL.decodeParameter(text))));
 				
 	}
+	
+	@GetMapping(value="/findSearch")
+	public ResponseEntity<List<PostDTO>> findSearch(@RequestParam(value="texto", defaultValue="") String texto,
+			                                        @RequestParam(value="minDate", defaultValue="") String minDate,
+			                                        @RequestParam(value="maxDate", defaultValue="") String maxDate){
+		
+		texto = URL.decodeParameter(texto);
+		Date dataMinima = URL.converteData(minDate, new Date(0L));
+		Date dataMaxima = URL.converteData(maxDate, new Date());
+		
+		return ResponseEntity.ok().body(new PostDTO().getListaPostDTO(postService.findSearch(texto, dataMinima, dataMaxima)));
+		
+	}
+	
+	
 
 }
